@@ -253,26 +253,26 @@ for jj in range(3):
 
 
         if do_save:
-            f = open("../saves3/exp_"+ name+"_"+str(i), 'w')
+            f = open("../saves/exp_"+ name+"_"+str(i), 'w')
             pickle.dump(explorations, f)
             f.close()
-            f = open("../saves3/NbB_"+ name+"_"+str(i), 'w')
+            f = open("../saves/NbB_"+ name+"_"+str(i), 'w')
             pickle.dump(number_balls_catched, f)
             f.close()
             if do_competence:
-                f = open("../saves3/CompBasic_"+ name+ "_" +nameCompetence1 + "_"+str(i), 'w')
+                f = open("../saves/CompBasic_"+ name+ "_" +nameCompetence1 + "_"+str(i), 'w')
                 pickle.dump(competenceBasic, f)
                 f.close()
-                f = open("../saves3/CompLCB_"+ name+ "_" +nameCompetence2 + "_"+str(i), 'w')
+                f = open("../saves/CompLCB_"+ name+ "_" +nameCompetence2 + "_"+str(i), 'w')
                 pickle.dump(competenceLCB, f)
                 f.close()
-            #~ f = open("../saves3/CompMPI_"+ name+ "_" +nameCompetence2 + "_"+str(i), 'w')
+            #~ f = open("../saves/CompMPI_"+ name+ "_" +nameCompetence2 + "_"+str(i), 'w')
             #~ pickle.dump(competenceMPI, f)
             #~ f.close()
-            #~ f = open("../saves3/CompEI_"+ name+ "_" +nameCompetence2 + "_"+str(i), 'w')
+            #~ f = open("../saves3CompEI_"+ name+ "_" +nameCompetence2 + "_"+str(i), 'w')
             #~ pickle.dump(competenceEI, f)
             #~ f.close()
-            f = open("../saves3/Time_"+ name+"_"+str(i), 'w')
+            f = open("../saves/Time_"+ name+"_"+str(i), 'w')
             pickle.dump(TimeAll, f)
             f.close()
 
