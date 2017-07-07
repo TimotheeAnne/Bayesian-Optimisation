@@ -13,6 +13,7 @@ from ipywidgets import interact_manual
 from numpy.random import random, normal, uniform
 import math
 
+
 from explauto import SensorimotorModel
 from explauto.sensorimotor_model.non_parametric import NonParametric
 from explauto import InterestModel
@@ -24,7 +25,6 @@ from explauto.environment.modular_environment import FlatEnvironment, Hierarchic
 
 from environment import Arm, Ball,ArmBall
 from explauto.sensorimotor_model.bayesian_optimisation import BayesianOptimisation
-
 grid_size = 10
 
 
@@ -85,14 +85,14 @@ def mesure_competence( dataset, methodTest, environment, j, b):
         smTest = SensorimotorModel.from_configuration(environment.conf, 'nearest_neighbor', 'default')
         smTest.model.imodel.fmodel.dataset = dataset
         smTest.t = len(dataset)
-        sigma_explo_ratio = 0.2
+        smTest.bootstrapped_s = True
         for _ in range(j):
             s_goal = tirage_disque()
             for _ in range(b-1):
                 m = smTest.inverse_prediction(tuple(s_goal))
-                m = normal(m, sigma_explo_ratio)
                 s = environment.update(m)
                 smTest.update(m,s)
+            smTest.mode = "exploit"
             m = smTest.inverse_prediction(tuple(s_goal))
             s = environment.update(m)
             dist.append(np.linalg.norm(s-s_goal))
