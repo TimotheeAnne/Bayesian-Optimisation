@@ -166,7 +166,7 @@ for jj in range(3):
                     S = []
                     size = len( sm_model.dataset )
                     for index in range(size - optimisation_iterations, size):
-                       S.append(sm_model.dataset.get_y(index))
+                       S.append(sm_model.dataset.get_y(index-1))
                     for s in S:
                         if environmentChoice == "SA":
                             explored_s_agb += [s]
