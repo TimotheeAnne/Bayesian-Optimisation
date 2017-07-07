@@ -27,6 +27,58 @@ from environment import Arm, Ball,ArmBall
 from explauto.sensorimotor_model.bayesian_optimisation import BayesianOptimisation
 grid_size = 10
 
+import matplotlib.patches as mpatches
+import matplotlib as mpl
+import matplotlib.lines as mlines
+
+def plot_motor_space(X):
+            def cut(l, color = "blue", marker = "o" , ms = 5, title = "Succesive position in the motor space" , x_lab = "x", y_lab ="y"):
+                l1 = []
+                l2 = []
+                n = len(l)
+                i = 0.
+                colors = ["cyan","blue", "green", "yellow", "red", "magenta"]
+                for [x1,x2] in l:
+                    if marker == "o":
+                        color = rainbow(i/n*0.8)
+                        plt.xlabel(x_lab)
+                        plt.ylabel(y_lab)
+                        plt.title(title)
+                    if title == "Two motors dimensions":
+                        plt.axis([-np.pi/2.9,np.pi/2.9,-np.pi/2.9,np.pi/2.9])
+                    plt.plot(x1,x2,marker =marker, color = color, ms=ms, alpha = 0.5)
+                    i+=1.
+
+            def cut_M(X):
+                n = len(X[0])/2
+                list_m = [ [] for _ in range(n)]
+                for x in X:
+                    for i in range(n):
+                        list_m[i].append([x[2*i],x[2*i+1]])
+                return list_m
+
+            M = cut_M(X)
+            fig, ax = plt.subplots(figsize=(20,20))
+            ax2 = fig.add_axes([0.05, 0.45, 0.9, 0.02])
+            N = 10
+            cmap = mpl.colors.ListedColormap([rainbow(i/(1.*(N+1))*0.8) for i in range(N+2)])
+            cmap.set_over('0.25')
+            cmap.set_under('0.75')
+
+            bounds = [int(1.*i/N * len(X)) for i in range(N+1)]
+            norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+            cb2 = mpl.colorbar.ColorbarBase(ax2, cmap=cmap,
+                                            norm=norm,
+                                            ticks=bounds,  # optional
+                                            spacing='proportional',
+                                            orientation='horizontal')
+            cb2.set_label('Iterations')
+            plt.subplot(231)
+            cut(M[0], title = "Two motors dimensions", x_lab = "d1", y_lab ="d2" )
+            plt.subplot(232)
+            cut(M[1],title = "Two motors dimensions",x_lab = "d3", y_lab ="d4" )
+            plt.subplot(233)
+            cut(M[2],title = "Two motors dimensions",x_lab = "d5", y_lab ="d6" )
 
 def compute_explo(data, mins, maxs, gs=100):
     n = len(mins)
@@ -85,14 +137,14 @@ def mesure_competence( dataset, methodTest, environment, j, b):
         smTest = SensorimotorModel.from_configuration(environment.conf, 'nearest_neighbor', 'default')
         smTest.model.imodel.fmodel.dataset = dataset
         smTest.t = len(dataset)
-        sigma_explo_ratio = 0.2
+        smTest.bootstrapped_s = True
         for _ in range(j):
             s_goal = tirage_disque()
             for _ in range(b-1):
                 m = smTest.inverse_prediction(tuple(s_goal))
-                m = normal(m, sigma_explo_ratio)
                 s = environment.update(m)
                 smTest.update(m,s)
+            smTest.mode = "exploit"
             m = smTest.inverse_prediction(tuple(s_goal))
             s = environment.update(m)
             dist.append(np.linalg.norm(s-s_goal))
